@@ -2,6 +2,7 @@ package org.stellar.reference.event.processor
 
 import java.time.Instant
 import java.util.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.stellar.anchor.api.callback.GetCustomerRequest
 import org.stellar.anchor.api.event.AnchorEvent
@@ -226,6 +227,7 @@ class Sep6EventProcessor(
                     )
                 )
               )
+              delay(45000)
             }
           }
           Kind.WITHDRAWAL -> {
