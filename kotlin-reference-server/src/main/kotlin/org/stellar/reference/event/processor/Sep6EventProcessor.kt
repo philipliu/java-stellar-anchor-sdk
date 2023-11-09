@@ -1,5 +1,7 @@
 package org.stellar.reference.event.processor
 
+import java.time.Instant
+import java.util.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.stellar.anchor.api.callback.GetCustomerRequest
@@ -14,8 +16,6 @@ import org.stellar.reference.data.*
 import org.stellar.reference.log
 import org.stellar.reference.service.SepHelper
 import org.stellar.sdk.*
-import java.time.Instant
-import java.util.*
 
 class Sep6EventProcessor(
   private val config: Config,
@@ -238,15 +238,8 @@ class Sep6EventProcessor(
                     transactionId = transaction.id,
                     message = "Please deposit the amount to the following address",
                     amountIn =
-                      AmountAssetRequest(
-                        asset = transaction.amountExpected.asset,
-                        amount = transaction.amountExpected.amount
-                      ),
-                    amountOut =
-                      AmountAssetRequest(
-                        asset = "iso4217:USD",
-                        amount = transaction.amountExpected.amount
-                      ),
+                      AmountAssetRequest(asset = transaction.amountExpected.asset, amount = "1"),
+                    amountOut = AmountAssetRequest(asset = "iso4217:USD", amount = "1"),
                     amountFee =
                       AmountAssetRequest(asset = transaction.amountExpected.asset, amount = "0")
                   )
@@ -297,6 +290,7 @@ class Sep6EventProcessor(
     val kind = event.transaction.kind
     val customer = event.transaction.customers.sender
     val missingFields = verifyKyc(customer.account, customer.memo, kind)
+    log.info { "Requesting KYC for transaction ${event.transaction.id}: $missingFields" }
     runBlocking {
       if (missingFields.isNotEmpty()) {
         sepHelper.rpcAction(
