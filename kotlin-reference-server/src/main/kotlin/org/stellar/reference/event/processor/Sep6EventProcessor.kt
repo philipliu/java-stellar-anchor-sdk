@@ -133,7 +133,7 @@ class Sep6EventProcessor(
           return
         }
         runBlocking {
-          if (offchainPayments[transaction.id] == null) {
+          if (offchainPayments[transaction.id] == null && transaction.transferReceivedAt != null) {
             val externalTxnId = UUID.randomUUID()
             offchainPayments[transaction.id] = externalTxnId.toString()
             sepHelper.rpcAction(
@@ -144,7 +144,7 @@ class Sep6EventProcessor(
                 externalTransactionId = externalTxnId.toString()
               )
             )
-          } else {
+          } else if (transaction.transferReceivedAt != null) {
             sepHelper.rpcAction(
               "notify_offchain_funds_available",
               NotifyOffchainFundsAvailableRequest(
