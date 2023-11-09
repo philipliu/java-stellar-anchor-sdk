@@ -227,7 +227,7 @@ class Sep6EventProcessor(
                     )
                 )
               )
-              delay(45000)
+              delay(10000)
             }
           }
           Kind.WITHDRAWAL -> {
@@ -288,7 +288,7 @@ class Sep6EventProcessor(
         "notify_amounts_updated",
         NotifyAmountsUpdatedRequest(
           transactionId = event.transaction.id,
-          amountOut = AmountAssetRequest(asset, amount = event.transaction.amountExpected.amount),
+          amountOut = AmountAssetRequest(asset, amount = "1"),
           amountFee = AmountAssetRequest(asset, amount = "0")
         )
       )
